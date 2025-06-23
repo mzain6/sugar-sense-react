@@ -11,15 +11,14 @@ import { useToast } from '@/hooks/use-toast';
 const PredictionForm = () => {
   const { toast } = useToast();
   const [formData, setFormData] = useState({
-    age: '',
-    gender: '',
-    bmi: '',
-    familyHistory: '',
-    physicalActivity: '',
-    smoking: '',
-    alcohol: '',
+    pregnancies: '',
+    glucose: '',
     bloodPressure: '',
-    cholesterol: '',
+    skinThickness: '',
+    insulin: '',
+    bmi: '',
+    diabetesPedigreeFunction: '',
+    age: '',
   });
   const [result, setResult] = useState<{ risk: string; percentage: number; recommendations: string[] } | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -36,59 +35,81 @@ const PredictionForm = () => {
     
     // Simulate AI processing
     setTimeout(() => {
-      // Simple risk calculation based on factors
+      // Enhanced risk calculation based on medical parameters
       let riskScore = 0;
       
-      // Age factor
-      if (parseInt(formData.age) > 45) riskScore += 20;
-      else if (parseInt(formData.age) > 35) riskScore += 10;
+      // Pregnancies factor (for females)
+      const pregnancies = parseInt(formData.pregnancies);
+      if (pregnancies > 5) riskScore += 15;
+      else if (pregnancies > 2) riskScore += 8;
+      
+      // Glucose level (most important factor)
+      const glucose = parseFloat(formData.glucose);
+      if (glucose >= 140) riskScore += 30;
+      else if (glucose >= 100) riskScore += 20;
+      else if (glucose >= 80) riskScore += 5;
+      
+      // Blood pressure
+      const bloodPressure = parseFloat(formData.bloodPressure);
+      if (bloodPressure >= 90) riskScore += 15;
+      else if (bloodPressure >= 80) riskScore += 8;
       
       // BMI factor
       const bmi = parseFloat(formData.bmi);
-      if (bmi > 30) riskScore += 25;
-      else if (bmi > 25) riskScore += 15;
+      if (bmi >= 30) riskScore += 20;
+      else if (bmi >= 25) riskScore += 12;
+      else if (bmi < 18.5) riskScore += 5;
       
-      // Family history
-      if (formData.familyHistory === 'yes') riskScore += 20;
+      // Age factor
+      const age = parseInt(formData.age);
+      if (age >= 60) riskScore += 15;
+      else if (age >= 45) riskScore += 10;
+      else if (age >= 35) riskScore += 5;
       
-      // Physical activity
-      if (formData.physicalActivity === 'low') riskScore += 15;
-      else if (formData.physicalActivity === 'moderate') riskScore += 5;
+      // Insulin level
+      const insulin = parseFloat(formData.insulin);
+      if (insulin > 200) riskScore += 12;
+      else if (insulin > 120) riskScore += 6;
       
-      // Smoking
-      if (formData.smoking === 'yes') riskScore += 10;
+      // Diabetes Pedigree Function (genetic predisposition)
+      const dpf = parseFloat(formData.diabetesPedigreeFunction);
+      if (dpf > 0.8) riskScore += 18;
+      else if (dpf > 0.5) riskScore += 12;
+      else if (dpf > 0.3) riskScore += 6;
       
-      // Blood pressure
-      if (formData.bloodPressure === 'high') riskScore += 15;
+      // Skin thickness
+      const skinThickness = parseFloat(formData.skinThickness);
+      if (skinThickness > 40) riskScore += 8;
+      else if (skinThickness > 30) riskScore += 4;
       
-      // Cholesterol
-      if (formData.cholesterol === 'high') riskScore += 10;
-      
-      const percentage = Math.min(riskScore, 85);
+      const percentage = Math.min(riskScore, 90);
       let riskLevel = 'Low';
       let recommendations = [
         'Maintain a healthy diet with low sugar and processed foods',
         'Engage in regular physical activity (150 minutes per week)',
-        'Monitor your weight and BMI regularly'
+        'Monitor your weight and BMI regularly',
+        'Get regular health check-ups'
       ];
       
       if (percentage > 60) {
         riskLevel = 'High';
         recommendations = [
-          'Consult with a healthcare provider immediately',
-          'Consider a comprehensive diabetes screening',
-          'Implement strict dietary changes',
+          'Consult with an endocrinologist immediately',
+          'Get comprehensive diabetes screening (HbA1c, fasting glucose)',
+          'Implement strict dietary changes with professional guidance',
           'Start a supervised exercise program',
-          'Monitor blood sugar levels regularly'
+          'Monitor blood glucose levels daily',
+          'Consider medication consultation if recommended by doctor'
         ];
-      } else if (percentage > 30) {
+      } else if (percentage > 35) {
         riskLevel = 'Moderate';
         recommendations = [
-          'Schedule regular check-ups with your doctor',
-          'Focus on weight management',
+          'Schedule regular check-ups with your healthcare provider',
+          'Focus on weight management and healthy BMI',
           'Increase physical activity gradually',
-          'Limit sugary drinks and refined carbohydrates',
-          'Consider annual diabetes screening'
+          'Limit refined carbohydrates and sugary foods',
+          'Monitor blood pressure regularly',
+          'Consider annual diabetes screening tests'
         ];
       }
       
@@ -101,7 +122,7 @@ const PredictionForm = () => {
       
       toast({
         title: "Assessment Complete",
-        description: "Your diabetes risk assessment has been calculated.",
+        description: "Your diabetes risk assessment has been calculated based on medical parameters.",
       });
     }, 2000);
   };
@@ -118,7 +139,7 @@ const PredictionForm = () => {
             Diabetes Risk Assessment
           </h2>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Answer a few questions about your health and lifestyle to get your personalized diabetes risk assessment.
+            Enter your medical parameters below for an AI-powered diabetes risk assessment based on clinical data.
           </p>
         </div>
 
@@ -129,136 +150,122 @@ const PredictionForm = () => {
               <CardHeader className="bg-gradient-to-r from-medical-600 to-health-600 text-white rounded-t-lg">
                 <CardTitle className="flex items-center text-xl">
                   <Calculator className="mr-2 h-5 w-5" />
-                  Health Assessment Form
+                  Medical Parameters Form
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-6 space-y-6">
                 <div className="grid md:grid-cols-2 gap-4">
                   <div className="space-y-2">
-                    <Label htmlFor="age">Age</Label>
+                    <Label htmlFor="pregnancies">Number of Pregnancies</Label>
+                    <Input
+                      id="pregnancies"
+                      type="number"
+                      min="0"
+                      placeholder="0"
+                      value={formData.pregnancies}
+                      onChange={(e) => handleInputChange('pregnancies', e.target.value)}
+                      className="border-gray-300"
+                    />
+                    <p className="text-xs text-gray-500">Enter 0 if male or never pregnant</p>
+                  </div>
+                  
+                  <div className="space-y-2">
+                    <Label htmlFor="glucose">Glucose Level (mg/dL)</Label>
+                    <Input
+                      id="glucose"
+                      type="number"
+                      placeholder="e.g., 85"
+                      value={formData.glucose}
+                      onChange={(e) => handleInputChange('glucose', e.target.value)}
+                      className="border-gray-300"
+                    />
+                    <p className="text-xs text-gray-500">Fasting glucose level</p>
+                  </div>
+                </div>
+
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="bloodPressure">Blood Pressure (mmHg)</Label>
+                    <Input
+                      id="bloodPressure"
+                      type="number"
+                      placeholder="e.g., 70"
+                      value={formData.bloodPressure}
+                      onChange={(e) => handleInputChange('bloodPressure', e.target.value)}
+                      className="border-gray-300"
+                    />
+                    <p className="text-xs text-gray-500">Diastolic blood pressure</p>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="skinThickness">Skin Thickness (mm)</Label>
+                    <Input
+                      id="skinThickness"
+                      type="number"
+                      placeholder="e.g., 20"
+                      value={formData.skinThickness}
+                      onChange={(e) => handleInputChange('skinThickness', e.target.value)}
+                      className="border-gray-300"
+                    />
+                    <p className="text-xs text-gray-500">Triceps skin fold thickness</p>
+                  </div>
+                </div>
+
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="insulin">Insulin Level (μU/mL)</Label>
+                    <Input
+                      id="insulin"
+                      type="number"
+                      placeholder="e.g., 79"
+                      value={formData.insulin}
+                      onChange={(e) => handleInputChange('insulin', e.target.value)}
+                      className="border-gray-300"
+                    />
+                    <p className="text-xs text-gray-500">Serum insulin level</p>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="bmi">BMI (Body Mass Index)</Label>
+                    <Input
+                      id="bmi"
+                      type="number"
+                      step="0.1"
+                      placeholder="e.g., 25.5"
+                      value={formData.bmi}
+                      onChange={(e) => handleInputChange('bmi', e.target.value)}
+                      className="border-gray-300"
+                    />
+                    <p className="text-xs text-gray-500">Weight(kg) ÷ Height(m)²</p>
+                  </div>
+                </div>
+
+                <div className="grid md:grid-cols-2 gap-4">
+                  <div className="space-y-2">
+                    <Label htmlFor="diabetesPedigreeFunction">Diabetes Pedigree Function</Label>
+                    <Input
+                      id="diabetesPedigreeFunction"
+                      type="number"
+                      step="0.001"
+                      placeholder="e.g., 0.627"
+                      value={formData.diabetesPedigreeFunction}
+                      onChange={(e) => handleInputChange('diabetesPedigreeFunction', e.target.value)}
+                      className="border-gray-300"
+                    />
+                    <p className="text-xs text-gray-500">Genetic predisposition score (0-2)</p>
+                  </div>
+
+                  <div className="space-y-2">
+                    <Label htmlFor="age">Age (years)</Label>
                     <Input
                       id="age"
                       type="number"
-                      placeholder="Enter your age"
+                      placeholder="e.g., 35"
                       value={formData.age}
                       onChange={(e) => handleInputChange('age', e.target.value)}
                       className="border-gray-300"
                     />
-                  </div>
-                  
-                  <div className="space-y-2">
-                    <Label htmlFor="gender">Gender</Label>
-                    <Select value={formData.gender} onValueChange={(value) => handleInputChange('gender', value)}>
-                      <SelectTrigger className="border-gray-300">
-                        <SelectValue placeholder="Select gender" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="male">Male</SelectItem>
-                        <SelectItem value="female">Female</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="bmi">BMI (Body Mass Index)</Label>
-                  <Input
-                    id="bmi"
-                    type="number"
-                    step="0.1"
-                    placeholder="Enter your BMI (e.g., 25.5)"
-                    value={formData.bmi}
-                    onChange={(e) => handleInputChange('bmi', e.target.value)}
-                    className="border-gray-300"
-                  />
-                  <p className="text-sm text-gray-500">Don't know your BMI? Calculate: weight(kg) ÷ height(m)²</p>
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="familyHistory">Family History of Diabetes</Label>
-                  <Select value={formData.familyHistory} onValueChange={(value) => handleInputChange('familyHistory', value)}>
-                    <SelectTrigger className="border-gray-300">
-                      <SelectValue placeholder="Select option" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="yes">Yes</SelectItem>
-                      <SelectItem value="no">No</SelectItem>
-                      <SelectItem value="unknown">Unknown</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="space-y-2">
-                  <Label htmlFor="physicalActivity">Physical Activity Level</Label>
-                  <Select value={formData.physicalActivity} onValueChange={(value) => handleInputChange('physicalActivity', value)}>
-                    <SelectTrigger className="border-gray-300">
-                      <SelectValue placeholder="Select activity level" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="low">Low (sedentary lifestyle)</SelectItem>
-                      <SelectItem value="moderate">Moderate (some exercise)</SelectItem>
-                      <SelectItem value="high">High (regular exercise)</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div className="grid md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="smoking">Smoking</Label>
-                    <Select value={formData.smoking} onValueChange={(value) => handleInputChange('smoking', value)}>
-                      <SelectTrigger className="border-gray-300">
-                        <SelectValue placeholder="Select option" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="yes">Yes</SelectItem>
-                        <SelectItem value="no">No</SelectItem>
-                        <SelectItem value="former">Former smoker</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="alcohol">Alcohol Consumption</Label>
-                    <Select value={formData.alcohol} onValueChange={(value) => handleInputChange('alcohol', value)}>
-                      <SelectTrigger className="border-gray-300">
-                        <SelectValue placeholder="Select option" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="none">None</SelectItem>
-                        <SelectItem value="moderate">Moderate</SelectItem>
-                        <SelectItem value="heavy">Heavy</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                </div>
-
-                <div className="grid md:grid-cols-2 gap-4">
-                  <div className="space-y-2">
-                    <Label htmlFor="bloodPressure">Blood Pressure</Label>
-                    <Select value={formData.bloodPressure} onValueChange={(value) => handleInputChange('bloodPressure', value)}>
-                      <SelectTrigger className="border-gray-300">
-                        <SelectValue placeholder="Select option" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="normal">Normal</SelectItem>
-                        <SelectItem value="high">High</SelectItem>
-                        <SelectItem value="unknown">Unknown</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-
-                  <div className="space-y-2">
-                    <Label htmlFor="cholesterol">Cholesterol Level</Label>
-                    <Select value={formData.cholesterol} onValueChange={(value) => handleInputChange('cholesterol', value)}>
-                      <SelectTrigger className="border-gray-300">
-                        <SelectValue placeholder="Select option" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="normal">Normal</SelectItem>
-                        <SelectItem value="high">High</SelectItem>
-                        <SelectItem value="unknown">Unknown</SelectItem>
-                      </SelectContent>
-                    </Select>
+                    <p className="text-xs text-gray-500">Your current age</p>
                   </div>
                 </div>
 
@@ -270,12 +277,12 @@ const PredictionForm = () => {
                   {isLoading ? (
                     <>
                       <Activity className="mr-2 h-5 w-5 animate-spin" />
-                      Analyzing...
+                      Analyzing Medical Data...
                     </>
                   ) : (
                     <>
                       <Calculator className="mr-2 h-5 w-5" />
-                      Calculate Risk
+                      Calculate Diabetes Risk
                     </>
                   )}
                 </Button>
@@ -325,15 +332,15 @@ const PredictionForm = () => {
                       </div>
                       
                       <p className="text-gray-600 text-center">
-                        Based on the information provided, your diabetes risk assessment shows a{' '}
-                        <span className="font-semibold">{result.risk.toLowerCase()} risk</span> level.
+                        Based on your medical parameters, the AI model predicts a{' '}
+                        <span className="font-semibold">{result.risk.toLowerCase()} risk</span> for diabetes.
                       </p>
                     </CardContent>
                   </Card>
 
                   <Card className="border-0 shadow-xl">
                     <CardHeader className="bg-medical-600 text-white rounded-t-lg">
-                      <CardTitle>Recommendations</CardTitle>
+                      <CardTitle>Medical Recommendations</CardTitle>
                     </CardHeader>
                     <CardContent className="p-6">
                       <ul className="space-y-3">
@@ -352,10 +359,10 @@ const PredictionForm = () => {
                   <CardContent className="p-12 text-center">
                     <Activity className="h-12 w-12 text-gray-400 mx-auto mb-4" />
                     <h3 className="text-lg font-semibold text-gray-600 mb-2">
-                      Complete the Assessment
+                      Enter Medical Parameters
                     </h3>
                     <p className="text-gray-500">
-                      Fill out the form to get your personalized diabetes risk assessment and recommendations.
+                      Fill out all medical parameters to get your AI-powered diabetes risk assessment.
                     </p>
                   </CardContent>
                 </Card>
