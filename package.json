@@ -8,7 +8,11 @@
     "build": "vite build",
     "build:dev": "vite build --mode development",
     "lint": "eslint .",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "backend": "python run.py",
+    "backend:setup": "python -m venv venv && venv/Scripts/pip install -r backend/requirements.txt",
+    "backend:train": "python backend/train_model.py",
+    "backend:test": "python -m pytest backend/test_api.py -v"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",
