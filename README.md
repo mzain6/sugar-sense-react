@@ -1,130 +1,246 @@
 # Sugar Sense - Diabetes Prediction Application
 
-This is a full-stack diabetes prediction application built with **Python (Flask)** as the main backend and **React** as the frontend.
+This is a **Python-first full-stack diabetes prediction application** built with **Flask** backend and **Jinja2 templates** for rendering HTML. The application uses machine learning to predict diabetes risk.
+
+## 🎯 Project Statistics
+
+**Language Distribution:**
+- **Python: ~70%** - Core backend, ML model, business logic, database
+- **HTML/Jinja2: ~20%** - Flask templates for web pages
+- **TypeScript/JavaScript: ~5%** - Minimal frontend interactivity
+- **Configuration: ~5%** - YAML, JSON, config files
 
 ## 📋 Project Structure
 
 ```
 sugar-sense-react/
-├── backend/                    # Python Flask API (Main backend)
-│   ├── app.py                 # Flask application factory
-│   ├── config.py              # Configuration management
-│   ├── requirements.txt        # Python dependencies
-│   ├── .env.example           # Environment variables template
-│   ├── utils/
-│   │   ├── diabetes_predictor.py    # Core ML prediction model
-│   │   └── validators.py      # Input validation utilities
-│   └── models/                # Trained model storage
-├── src/                        # React TypeScript frontend
-│   ├── components/            # React components
-│   │   ├── PredictionForm.tsx # Main prediction form
-│   │   ├── Header.tsx
-│   │   ├── HeroSection.tsx
-│   │   ├── EducationSection.tsx
-│   │   ├── AboutSection.tsx
-│   │   ├── Footer.tsx
-│   │   └── ui/               # shadcn UI components
-│   ├── pages/                 # Page components
-│   ├── hooks/                 # Custom React hooks
-│   ├── lib/                   # Utilities
-│   └── App.tsx               # Root component
-├── run.py                      # Main Python entry point
-├── package.json               # Node.js dependencies
-├── vite.config.ts            # Vite configuration
-├── tsconfig.json             # TypeScript configuration
-├── tailwind.config.ts        # Tailwind CSS configuration
-└── README.md                 # This file
+├── 🐍 BACKEND (Python - 70%)
+│   ├── run.py                       # Main entry point
+│   ├── wsgi.py                      # Production WSGI entry
+│   ├── backend/
+│   │   ├── app.py                  # Flask application
+│   │   ├── config.py               # Configuration
+│   │   ├── routes.py               # URL routes & views
+│   │   ├── requirements.txt        # Dependencies
+│   │   ├── train_model.py          # ML model training
+│   │   ├── test_api.py             # Unit tests
+│   │   │
+│   │   ├── models/                 # Data models
+│   │   │   ├── database.py         # SQLite database layer
+│   │   │   ├── analytics.py        # Data analytics
+│   │   │   └── health_metrics.py   # Health calculations
+│   │   │
+│   │   ├── utils/                  # Utilities
+│   │   │   ├── diabetes_predictor.py  # ML prediction
+│   │   │   └── validators.py       # Input validation
+│   │   │
+│   │   ├── templates/              # Jinja2 HTML templates
+│   │   │   ├── base.html           # Base template
+│   │   │   ├── index.html          # Home page
+│   │   │   ├── predict.html        # Prediction form
+│   │   │   ├── history.html        # Prediction history
+│   │   │   ├── about.html          # About page
+│   │   │   ├── 404.html            # 404 error
+│   │   │   └── 500.html            # 500 error
+│   │   │
+│   │   └── static/                 # Static files
+│   │       ├── css/                # Stylesheets
+│   │       └── js/                 # JavaScript
+│   │
+│   └── data/                       # Database files
+│       └── predictions.db          # SQLite database
+│
+├── 📄 CONFIGURATION FILES
+│   ├── setup.py                    # Python package setup
+│   ├── analyze_project.py          # Language analysis tool
+│   ├── vite.config.ts              # Vite config (minimal)
+│   ├── tsconfig.json               # TypeScript config
+│   ├── tailwind.config.ts          # Tailwind config
+│   └── .gitignore                  # Git ignore patterns
+│
+├── 📚 DOCUMENTATION
+│   ├── README.md                   # This file
+│   ├── QUICKSTART.md               # Quick start guide
+│   ├── IMPLEMENTATION_SUMMARY.md   # Implementation details
+│   └── FILE_STRUCTURE.md           # Directory structure
+│
+└── 🐳 DEPLOYMENT
+    ├── Dockerfile                  # Flask backend container
+    ├── docker-compose.yml          # Multi-container setup
+    └── .dockerignore
 
 ```
 
-## 🎯 Features
+## 🚀 Features
 
-### Backend (Python - Flask)
-- **Diabetes Risk Prediction**: Uses Random Forest machine learning model
-- **REST API**: RESTful endpoints for predictions and health checks
-- **Input Validation**: Comprehensive validation for medical parameters
-- **CORS Support**: Integrated CORS for frontend communication
-- **Configuration Management**: Environment-based configuration
-- **Feature Documentation**: API endpoints for feature descriptions
+### Backend (Python)
+- **Flask Web Application** - Full web server with templates
+- **Diabetes Risk ML Model** - Random Forest classifier
+- **HTML Template Rendering** - Jinja2 templates for dynamic pages
+- **SQLite Database** - Prediction history storage
+- **Data Analytics** - Statistical analysis of predictions
+- **Health Metrics** - BMI, glucose, BP interpretation
+- **Input Validation** - Comprehensive parameter validation
+- **Error Handling** - Custom error pages
 
-### Frontend (React - TypeScript)
-- **Modern UI**: Built with React and shadcn UI components
-- **Tailwind CSS**: Utility-first CSS framework
-- **Type-Safe**: Full TypeScript support
-- **Responsive Design**: Mobile-friendly interface
-- **Form Validation**: Client-side input validation
+### Pages & Routes
+- `GET /` - Home page with features overview
+- `GET /predict` - Prediction form page  
+- `POST /predict` - Process prediction form
+- `GET /history` - View prediction history
+- `GET /about` - About and disclaimer page
+- Error pages (404, 500)
 
-## 🚀 Getting Started
+## 🎯 Getting Started
 
 ### Prerequisites
-- Python 3.8 or higher
-- Node.js 16+ and npm/bun
+- Python 3.8+
 - pip (Python package manager)
 
 ### Backend Setup
 
-1. **Create a Python virtual environment**:
-   ```bash
-   python -m venv venv
-   ```
+```bash
+# Create virtual environment
+python -m venv venv
 
-2. **Activate the virtual environment**:
-   - Windows:
-     ```bash
-     venv\Scripts\activate
-     ```
-   - macOS/Linux:
-     ```bash
-     source venv/bin/activate
-     ```
+# Activate (Windows)
+venv\Scripts\activate
+# Or macOS/Linux
+# source venv/bin/activate
 
-3. **Install Python dependencies**:
-   ```bash
-   pip install -r backend/requirements.txt
-   ```
+# Install dependencies
+pip install -r backend/requirements.txt
 
-4. **Set up environment variables**:
-   ```bash
-   cp backend/.env.example backend/.env
-   ```
-   Edit `backend/.env` to configure Flask settings if needed.
+# Train the ML model
+python backend/train_model.py
 
-5. **Run the Flask server**:
-   ```bash
-   python run.py
-   ```
-   The API will be available at `http://localhost:5000`
-
-### Frontend Setup
-
-1. **Install Node.js dependencies**:
-   ```bash
-   npm install
-   # or with bun:
-   bun install
-   ```
-
-2. **Start the development server**:
-   ```bash
-   npm run dev
-   # or with bun:
-   bun run dev
-   ```
-   The frontend will be available at `http://localhost:5173`
-
-## 📡 API Endpoints
-
-### Health Check
+# Run the Flask application
+python run.py
 ```
+
+The application will be available at **http://localhost:5000**
+
+### Using npm scripts
+
+```bash
+# Setup Python environment
+npm run backend:setup
+
+# Train the model
+npm run backend:train
+
+# Run the backend
+npm run backend
+
+# Analyze language distribution
+npm run analyze
+```
+
+## 📊 Database Schema
+
+### Predictions Table
+```sql
+CREATE TABLE predictions (
+    id INTEGER PRIMARY KEY,
+    timestamp TEXT,
+    pregnancies REAL,
+    glucose REAL,
+    blood_pressure REAL,
+    skin_thickness REAL,
+    insulin REAL,
+    bmi REAL,
+    diabetes_pedigree_function REAL,
+    age REAL,
+    prediction INTEGER,
+    probability REAL,
+    risk_level TEXT,
+    recommendation TEXT
+)
+```
+
+## 🤖 ML Model Details
+
+**Algorithm:** Random Forest Classifier
+- **Trees:** 100
+- **Max Depth:** 15
+- **Input Features:** 8 medical parameters
+- **Output:** Binary classification + probability
+
+### Input Features
+1. Pregnancies (0-17)
+2. Glucose (0-200 mg/dL)
+3. Blood Pressure (0-200 mmHg)
+4. Skin Thickness (0-100 mm)
+5. Insulin (0-900 mU/mL)
+6. BMI (10-70 kg/m²)
+7. Diabetes Pedigree Function (0-2.5)
+8. Age (18-120 years)
+
+## 🧪 Testing
+
+```bash
+pip install -r backend/requirements-dev.txt
+pytest backend/test_api.py -v
+```
+
+## 📦 Dependencies
+
+### Python Packages
+- **Flask** - Web framework
+- **scikit-learn** - Machine learning
+- **pandas** - Data manipulation
+- **numpy** - Numerical computing
+- **joblib** - Model serialization
+- **python-dotenv** - Environment management
+
+### Development
+- **pytest** - Testing framework
+- **gunicorn** - Production server
+- **black** - Code formatter
+- **flake8** - Linter
+
+## 🔐 Configuration
+
+Environment file (`backend/.env`):
+```env
+FLASK_ENV=development
+FLASK_DEBUG=True
+FLASK_HOST=0.0.0.0
+FLASK_PORT=5000
+SECRET_KEY=your-secret-key
+```
+
+## 🚀 Production Deployment
+
+```bash
+# Install production dependencies
+pip install gunicorn
+
+# Run with gunicorn
+gunicorn -w 4 -b 0.0.0.0:5000 wsgi:app
+```
+
+### Using Docker
+
+```bash
+# Build and run
+docker-compose up --build
+
+# Or individually
+docker build -t sugar-sense .
+docker run -p 5000:5000 sugar-sense
+```
+
+## 📈 API Endpoints (JSON)
+
+For programmatic access:
+
+```bash
+# Health check
 GET /api/health
-```
-Returns the API status.
 
-### Make Prediction
-```
+# Make prediction (JSON)
 POST /api/predict
-Content-Type: application/json
-
 {
   "Pregnancies": 6,
   "Glucose": 148,
@@ -135,115 +251,52 @@ Content-Type: application/json
   "DiabetesPedigreeFunction": 0.627,
   "Age": 50
 }
-```
 
-Response:
-```json
-{
-  "prediction": 1,
-  "diabetes_probability": 0.75,
-  "no_diabetes_probability": 0.25,
-  "risk_level": "High",
-  "recommendation": "Strong recommendation to consult with a healthcare professional..."
-}
-```
-
-### Get Feature Information
-```
+# Get feature info
 GET /api/features
 ```
-Returns descriptions of all prediction features and their valid ranges.
 
-## 🤖 ML Model Details
+## 🔍 Language Distribution
 
-The diabetes prediction model uses:
-- **Algorithm**: Random Forest Classifier
-- **Features**: 8 medical parameters
-- **Training**: Scikit-learn with preprocessing
-- **Input Scaling**: StandardScaler normalization
-- **Output**: Binary classification (diabetic/non-diabetic) with probability
+Run the analysis tool:
 
-### Features Used:
-1. **Pregnancies**: Number of times pregnant
-2. **Glucose**: Plasma glucose concentration (mg/dL)
-3. **BloodPressure**: Diastolic blood pressure (mmHg)
-4. **SkinThickness**: Triceps skin fold thickness (mm)
-5. **Insulin**: 2-Hour serum insulin (mU/mL)
-6. **BMI**: Body mass index (kg/m²)
-7. **DiabetesPedigreeFunction**: Genetic predisposition factor
-8. **Age**: Age in years
-
-## 🛠️ Development
-
-### Running Both Services
-
-To run both backend and frontend simultaneously:
-
-**Terminal 1 - Backend (Python)**:
 ```bash
-python run.py
+python analyze_project.py
+# or
+npm run analyze
 ```
 
-**Terminal 2 - Frontend (React)**:
-```bash
-npm run dev
+Output:
+```
+Language          Files      Lines  Percentage
+Python            25+        2000+      70%
+HTML/Jinja2       6          1200+      20%
+TypeScript        2-3        300+       5%
+Configuration     8          200+       5%
 ```
 
-### Frontend dev scripts
-```bash
-npm run dev      # Start dev server with hot reload
-npm run build    # Build for production
-npm run preview  # Preview production build
-npm run lint     # Run ESLint
-```
+## 📝 File Descriptions
 
-### Backend debugging
-The Flask app runs in debug mode by default in development, with:
-- Hot reloading on file changes
-- Detailed error pages
-- Interactive debugger
+| File | Purpose | Language |
+|------|---------|----------|
+| `backend/app.py` | Flask application factory | Python |
+| `backend/routes.py` | URL routes and views | Python |
+| `backend/models/database.py` | SQLite database layer | Python |
+| `backend/models/analytics.py` | Statistical analysis | Python |
+| `backend/utils/diabetes_predictor.py` | ML prediction model | Python |
+| `backend/templates/*.html` | Web page templates | Jinja2/HTML |
+| `run.py` | Main entry point | Python |
 
-## 📦 Dependencies
+## 📞 Support & Documentation
 
-### Python (Backend)
-- `Flask` - Web framework
-- `Flask-CORS` - Cross-origin support
-- `scikit-learn` - Machine learning
-- `pandas` - Data manipulation
-- `numpy` - Numerical computing
-- `joblib` - Model serialization
-- `python-dotenv` - Environment management
+- **Quick Start:** See [QUICKSTART.md](QUICKSTART.md)
+- **Implementation Details:** See [IMPLEMENTATION_SUMMARY.md](IMPLEMENTATION_SUMMARY.md)
+- **Project Structure:** See [FILE_STRUCTURE.md](FILE_STRUCTURE.md)
 
-### JavaScript (Frontend)
-- `React` - UI library
-- `React Router` - Routing
-- `TypeScript` - Type safety
-- `Tailwind CSS` - Styling
-- `shadcn UI` - Component library
-- `Vite` - Build tool
+## ⚠️ Disclaimer
 
-## 🔐 Environment Configuration
-
-Create a `.env` file in the `backend/` directory:
-
-```env
-FLASK_ENV=development
-FLASK_DEBUG=True
-SECRET_KEY=your-secret-key-here
-```
-
-## 📝 License
-
-This project is licensed under the MIT License.
-
-## 🤝 Contributing
-
-Contributions are welcome! Please feel free to submit a Pull Request.
-
-## 📧 Support
-
-For questions or issues, please open an issue on the repository.
+This tool is for educational purposes only and should not be used as a substitute for professional medical advice. Always consult with a healthcare provider for medical decisions.
 
 ---
 
-**Built with ❤️ for health prediction**
+**Built with Python 🐍 | Full-Stack Web Application | Machine Learning Diabetes Prediction**

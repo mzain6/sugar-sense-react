@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Sugar Sense - Diabetes Prediction{% endblock %}</title>
+    <link href="https://cdn.tailwindcss.com" rel="stylesheet">
+    <style>
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; }
+        .gradient-bg { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); }
+        .card { transition: transform 0.3s ease, box-shadow 0.3s ease; }
+        .card:hover { transform: translateY(-4px); box-shadow: 0 20px 25px rgba(0, 0, 0, 0.1); }
+    </style>
+</head>
+<body class="bg-gray-50">
+    <nav class="bg-white shadow-md">
+        <div class="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
+            <h1 class="text-2xl font-bold text-purple-600">🍬 Sugar Sense</h1>
+            <ul class="flex gap-6">
+                <li><a href="/" class="text-gray-700 hover:text-purple-600">Home</a></li>
+                <li><a href="/predict" class="text-gray-700 hover:text-purple-600">Predict</a></li>
+                <li><a href="/about" class="text-gray-700 hover:text-purple-600">About</a></li>
+                <li><a href="/history" class="text-gray-700 hover:text-purple-600">History</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main>
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="bg-gray-800 text-white py-8 mt-12">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <p>&copy; 2026 Sugar Sense. Early diabetes detection for healthier living.</p>
+        </div>
+    </footer>
+
+    {% block scripts %}{% endblock %}
+</body>
+</html>

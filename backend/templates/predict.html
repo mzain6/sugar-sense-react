@@ -1,0 +1,152 @@
+{% extends "base.html" %}
+
+{% block title %}Diabetes Risk Prediction - Sugar Sense{% endblock %}
+
+{% block content %}
+<div class="max-w-4xl mx-auto px-4 py-16">
+    <h2 class="text-4xl font-bold mb-8 text-center text-gray-800">Diabetes Risk Assessment</h2>
+
+    <div class="bg-white rounded-lg shadow-lg p-8">
+        {% if error %}
+        <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-6">
+            {{ error }}
+        </div>
+        {% endif %}
+
+        {% if prediction %}
+        <div class="mb-8 p-6 bg-gradient-to-r from-purple-50 to-blue-50 rounded-lg border-2 border-purple-200">
+            <h3 class="text-2xl font-bold mb-6 text-center text-gray-800">Your Results</h3>
+            
+            <div class="grid md:grid-cols-2 gap-6 mb-6">
+                <div class="bg-white p-4 rounded border-l-4 border-blue-500">
+                    <p class="text-gray-600 text-sm">Diabetes Probability</p>
+                    <p class="text-3xl font-bold text-blue-600">{{ "%.1f" | format(prediction.diabetes_probability * 100) }}%</p>
+                </div>
+                <div class="bg-white p-4 rounded border-l-4 border-green-500">
+                    <p class="text-gray-600 text-sm">Risk Level</p>
+                    <p class="text-3xl font-bold text-green-600">{{ prediction.risk_level }}</p>
+                </div>
+            </div>
+
+            <div class="bg-white p-4 rounded mb-4">
+                <h4 class="font-bold text-lg mb-2 text-gray-800">🏥 Recommendation:</h4>
+                <p class="text-gray-700">{{ prediction.recommendation }}</p>
+            </div>
+
+            <div class="flex gap-3">
+                <a href="/predict" class="flex-1 bg-purple-600 text-white px-4 py-2 rounded text-center hover:bg-purple-700 transition">
+                    New Prediction
+                </a>
+                <a href="/history" class="flex-1 bg-gray-600 text-white px-4 py-2 rounded text-center hover:bg-gray-700 transition">
+                    View History
+                </a>
+            </div>
+        </div>
+        {% endif %}
+
+        <form method="POST" class="space-y-6">
+            <div class="grid md:grid-cols-2 gap-6">
+                <div>
+                    <label class="block text-gray-700 font-semibold mb-2">
+                        Pregnancies (0-17)
+                        <span class="text-red-500">*</span>
+                    </label>
+                    <input type="number" name="Pregnancies" step="1" min="0" max="17" 
+                           value="{{ form.Pregnancies or '' }}" required
+                           class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-purple-500">
+                    <p class="text-gray-500 text-sm mt-1">Number of times pregnant</p>
+                </div>
+
+                <div>
+                    <label class="block text-gray-700 font-semibold mb-2">
+                        Glucose Level (0-200 mg/dL)
+                        <span class="text-red-500">*</span>
+                    </label>
+                    <input type="number" name="Glucose" step="0.1" min="0" max="200" 
+                           value="{{ form.Glucose or '' }}" required
+                           class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-purple-500">
+                    <p class="text-gray-500 text-sm mt-1">Fasting blood glucose concentration</p>
+                </div>
+
+                <div>
+                    <label class="block text-gray-700 font-semibold mb-2">
+                        Blood Pressure (0-200 mmHg)
+                        <span class="text-red-500">*</span>
+                    </label>
+                    <input type="number" name="BloodPressure" step="0.1" min="0" max="200" 
+                           value="{{ form.BloodPressure or '' }}" required
+                           class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-purple-500">
+                    <p class="text-gray-500 text-sm mt-1">Diastolic blood pressure</p>
+                </div>
+
+                <div>
+                    <label class="block text-gray-700 font-semibold mb-2">
+                        Skin Thickness (0-100 mm)
+                        <span class="text-red-500">*</span>
+                    </label>
+                    <input type="number" name="SkinThickness" step="0.1" min="0" max="100" 
+                           value="{{ form.SkinThickness or '' }}" required
+                           class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-purple-500">
+                    <p class="text-gray-500 text-sm mt-1">Triceps skin fold thickness</p>
+                </div>
+
+                <div>
+                    <label class="block text-gray-700 font-semibold mb-2">
+                        Insulin (0-900 mU/mL)
+                        <span class="text-red-500">*</span>
+                    </label>
+                    <input type="number" name="Insulin" step="0.1" min="0" max="900" 
+                           value="{{ form.Insulin or '' }}" required
+                           class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-purple-500">
+                    <p class="text-gray-500 text-sm mt-1">2-hour serum insulin</p>
+                </div>
+
+                <div>
+                    <label class="block text-gray-700 font-semibold mb-2">
+                        BMI (10-70 kg/m²)
+                        <span class="text-red-500">*</span>
+                    </label>
+                    <input type="number" name="BMI" step="0.1" min="10" max="70" 
+                           value="{{ form.BMI or '' }}" required
+                           class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-purple-500">
+                    <p class="text-gray-500 text-sm mt-1">Body mass index</p>
+                </div>
+
+                <div>
+                    <label class="block text-gray-700 font-semibold mb-2">
+                        Diabetes Pedigree Function (0-2.5)
+                        <span class="text-red-500">*</span>
+                    </label>
+                    <input type="number" name="DiabetesPedigreeFunction" step="0.001" min="0" max="2.5" 
+                           value="{{ form.DiabetesPedigreeFunction or '' }}" required
+                           class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-purple-500">
+                    <p class="text-gray-500 text-sm mt-1">Genetic predisposition factor</p>
+                </div>
+
+                <div>
+                    <label class="block text-gray-700 font-semibold mb-2">
+                        Age (18-120 years)
+                        <span class="text-red-500">*</span>
+                    </label>
+                    <input type="number" name="Age" step="1" min="18" max="120" 
+                           value="{{ form.Age or '' }}" required
+                           class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-purple-500">
+                    <p class="text-gray-500 text-sm mt-1">Age in years</p>
+                </div>
+            </div>
+
+            <button type="submit" class="w-full bg-gradient-to-r from-purple-600 to-blue-600 text-white px-6 py-3 rounded-lg font-bold text-lg hover:from-purple-700 hover:to-blue-700 transition">
+                🔮 Predict Diabetes Risk
+            </button>
+        </form>
+
+        <div class="mt-8 p-4 bg-blue-50 border-l-4 border-blue-500 rounded">
+            <h4 class="font-bold text-blue-900 mb-2">ℹ️ About This Tool</h4>
+            <p class="text-blue-800 text-sm">
+                This tool uses a Random Forest machine learning model trained on medical data to predict diabetes risk.
+                It is not a substitute for professional medical advice. Always consult with a healthcare provider for accurate diagnosis.
+            </p>
+        </div>
+    </div>
+</div>
+{% endblock %}

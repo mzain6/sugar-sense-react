@@ -12,7 +12,9 @@
     "backend": "python run.py",
     "backend:setup": "python -m venv venv && venv/Scripts/pip install -r backend/requirements.txt",
     "backend:train": "python backend/train_model.py",
-    "backend:test": "python -m pytest backend/test_api.py -v"
+    "backend:test": "python -m pytest backend/test_api.py -v",
+    "backend:analyze": "python analyze_project.py",
+    "analyze": "python analyze_project.py"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.9.0",
